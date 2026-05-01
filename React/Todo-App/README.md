@@ -20,12 +20,14 @@ A modern React Todo application built using React and Tailwind CSS.
 
 ## Folder Structure
 
+```bash
 Todo-App/
 │
 ├── public/
 ├── src/
 ├── package.json
 └── vite.config.js
+```
 
 ## Installation
 
