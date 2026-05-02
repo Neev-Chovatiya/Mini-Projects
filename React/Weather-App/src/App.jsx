@@ -10,7 +10,7 @@ function App() {
     if (city.trim() === "") return;
     try {
       setError("");
-      const apikey = "5bc711bde60f17aa40339b89d86dece6";
+      const apikey = import.meta.env.VITE_API_KEY;
       setloading(true);
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`,
