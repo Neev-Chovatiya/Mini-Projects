@@ -1,34 +1,58 @@
-let tasks = [];
+const Task = require('../models/Task');
 
-exports.getTasks = (req,res)=>{
-    res.json(tasks);
-}
-
-exports.createTask = (req,res)=>{
-    if (!req.body.title) {
-        return res.status(400).json({ error: "Title is required" });
-    } 
-
-    const task = {
-        id:Date.now(),
-        title:req.body.title,
-        status:req.body.status || 'pending'
+exports.getTasks = async (req,res)=>{
+    try{
+        const tasks = await Task.find();
+        res.json(tasks);
+    }catch(err){
+        res.status(500).json({
+            error:err.message
+        });
     }
-
-    tasks.push(task)
-    res.json(task);
 }
 
-exports.deleteTask = (req,res)=>{
-    const id = req.params.id;
-    tasks=tasks.filter(task=>task.id !== Number(id));
-    res.json({message:"Task Deleted"});
+exports.createTask = async (req,res)=>{
+    try{
+        if(!req.body.title){
+            res.status(400).json({
+                error:"Title is required"
+            });
+        }
+        const task = new Task(req.body);
+        await task.save();
+        res.status(201).json(task);  
+    }catch(err){
+        res.status(500).json({
+            error:err.message
+        });
+    }
 }
 
-exports.updateTask = (req,res)=>{
-    const id = req.params.id;
-    tasks=tasks.map(task=>{
-        task.id==id?{...task,...req.body}:task
+exports.deleteTask = async (req, res) => {
+  try {
+    await Task.findByIdAndDelete(req.params.id);
+    res.json({
+      message: "Task deleted"
     });
-    res.json({message:"Task Updated"});
-}
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+};
+
+exports.updateTask = async (req, res) => {
+  try {
+    await Task.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
+    res.json({
+      message: "Task updated"
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+};
